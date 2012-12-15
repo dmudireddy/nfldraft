@@ -20,12 +20,8 @@
     <%= f.number_field :pick %>
   </div>
   <div class="field">
-    <%= f.label :team_id %><br />
-    <%= f.select :team_id,@teams.collect{|t| [t.teamname,t.id]} %>
-  </div>
-  <div class="field">
-    <%= f.label :player_id %><br />
-    <%= f.select :player_id,@players.collect{|p| [p.playername,p.id]} %>
+    <%= f.label :teamname %><br />
+    <%= f.text_field :teamname %>
   </div>
   <div class="actions">
     <%= f.submit %>

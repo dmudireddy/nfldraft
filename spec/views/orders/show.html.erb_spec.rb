@@ -5,8 +5,7 @@ describe "orders/show" do
     @order = assign(:order, stub_model(Order,
       :round => 1,
       :pick => 2,
-      :team_id => 3,
-      :player_id => 4
+      :teamname => "Teamname"
     ))
   end
 
@@ -15,7 +14,6 @@ describe "orders/show" do
     # Run the generator again with the --webrat flag if you want to use webrat matchers
     rendered.should match(/1/)
     rendered.should match(/2/)
-    rendered.should match(/3/)
-    rendered.should match(/4/)
+    rendered.should match(/Teamname/)
   end
 end

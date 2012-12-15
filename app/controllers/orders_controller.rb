@@ -25,8 +25,7 @@ class OrdersController < ApplicationController
   # GET /orders/new.json
   def new
     @order = Order.new
-    @players = Player.all
-    @teams = Team.all
+
     respond_to do |format|
       format.html # new.html.erb
       format.json { render json: @order }

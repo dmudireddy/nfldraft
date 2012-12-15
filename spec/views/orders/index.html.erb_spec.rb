@@ -6,14 +6,12 @@ describe "orders/index" do
       stub_model(Order,
         :round => 1,
         :pick => 2,
-        :team_id => 3,
-        :player_id => 4
+        :teamname => "Teamname"
       ),
       stub_model(Order,
         :round => 1,
         :pick => 2,
-        :team_id => 3,
-        :player_id => 4
+        :teamname => "Teamname"
       )
     ])
   end
@@ -23,7 +21,6 @@ describe "orders/index" do
     # Run the generator again with the --webrat flag if you want to use webrat matchers
     assert_select "tr>td", :text => 1.to_s, :count => 2
     assert_select "tr>td", :text => 2.to_s, :count => 2
-    assert_select "tr>td", :text => 3.to_s, :count => 2
-    assert_select "tr>td", :text => 4.to_s, :count => 2
+    assert_select "tr>td", :text => "Teamname".to_s, :count => 2
   end
 end

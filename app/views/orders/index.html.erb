@@ -4,8 +4,7 @@
   <tr>
     <th>Round</th>
     <th>Pick</th>
-    <th>Team</th>
-    <th>Player</th>
+    <th>Teamname</th>
     <th></th>
     <th></th>
     <th></th>
@@ -15,8 +14,7 @@
   <tr>
     <td><%= order.round %></td>
     <td><%= order.pick %></td>
-    <td><%= order.team.teamname %></td>
-    <td><%= order.player.playername %></td>
+    <td><%= order.teamname %></td>
     <td><%= link_to 'Show', order %></td>
     <td><%= link_to 'Edit', edit_order_path(order) %></td>
     <td><%= link_to 'Destroy', order, method: :delete, data: { confirm: 'Are you sure?' } %></td>

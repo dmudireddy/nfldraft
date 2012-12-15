@@ -7,7 +7,8 @@ namespace :importplayers do
 
     csv_file_path = '/home/divya/Documents/AptanaStudio3Workspace/nfldraft/nfldraft/db/players.csv'
 
-    CSV.foreach(csv_file_path) do |row|
+
+    CSV.foreach(csv_file_path, :headers =>true) do |row|
 
       p = Player.create!({
           :playername => row[0],
