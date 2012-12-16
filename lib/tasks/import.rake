@@ -10,7 +10,7 @@ namespace :import do
     CSV.foreach(csv_file_path, :headers =>true) do |row|
 
       p = Team.create!({
-          :teamname => row[0],
+          :teamname => row[0].rstrip,
           :division => row[1]
         }
       )

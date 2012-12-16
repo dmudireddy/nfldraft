@@ -1,9 +1,8 @@
 class Player < ActiveRecord::Base
-  attr_accessible :playername, :position
-  belongs_to :team
+  attr_accessible :picked, :playername, :position, :team_id
   
-  def self.playercount
+  belongs_to :team
+   def self.playercount
     Player.count
   end
-
 end

@@ -1,61 +1,49 @@
+
 namespace :simulate do
- $i = 1
- $total_order = 256
-p = 1
+    $i = 0  
   task :order => :environment do
- 
-   pickedorder =  pick_next_order(Order)
-   puts"ORDERprint:#{ pickedorder.team}"
-   
-    $teamname = pickedorder.team
-   # firstround_allpicks = Order.find(:all,:conditions => {:round => "1"})
-   # firstround_allpicks.each do |o|
-    # # puts"#{o.pick},#{o.teamname}"
-   # firstround_all_picks
-   
-   
-   # end
-   $player = nextplayer_to_be_picked(Player)
-   
-     
+    $offset_array = Array.new
+      $offset_array[0] = 0
+  for round_i in 1..3 
+  orders_teams_round = draft_order_round(Order,round_i)
+ numof_teams_this_round = orders_teams_round.count
+ $offset_for_next_round = numof_teams_this_round
+  (1..(orders_teams_round.count)).each do |i|
+    puts" ROUND : #{round_i}, PICK #{i}:"
+    order_teamname = orders_teams_round[i-1].team
+       team = get_teamobject(order_teamname,Team)
+       player = nextplayer_to_be_picked(Player,round_i,numof_teams_this_round )
+     puts"Team to pick :#{order_teamname},team_id:#{team.id},player_id :#{player.id}"
+     team.acquire(player.id,team.id) 
+    #sleep(2)
+   end
+  puts"$OFFSET for #{round_i}:#{$offset}, num_of_teams in this round : #{orders_teams_round.count}"
+  $offset_array[round_i] = $offset_array[round_i-1] + numof_teams_this_round
+   end #for loop
   end
-  task :team => :environment do
-    
-    $teamobject = teambytheorderlist($teamname,Team)
-    puts "TEAMprint:teamobject teamname #{$teamobject.class}"
-    
+  task :team => :environment do 
   end
-  task :all => [:order, :team]
-  task :player => :environment do
-   nextplayer_to_be_picked(Player)
-    
-  end
-    def teambytheorderlist(teamn,teammodel)
-          
-    puts " TEAMprint:team name is #{teamn}"
-    puts " TEAMprint:count of teammodel is #{teammodel.count}"
-    $teamobject = Team.find('Buffalo Bills')
- 
-    
-    # first,:conditions => {:teamname => "Louis Rams"})
-      # t= teamobjects[0]
-     
-     
+  task :all => [:order, :team] 
+    def draft_order_round(ordermodel,round_i)
+      puts"Round_i : #{round_i}"
+       ordermodel.find(:all,:conditions => {:round => round_i})   
     end
-  def pick_next_order(ordermodel)
-     firstpick = ordermodel.find(:first)
-       $firstpick_teamname = firstpick.team
-     puts"First team from the order list to pick a player:#{firstpick.team}"
-     firstpick = ordermodel.find(:first)
+     def get_teamobject(teamname,teammodel)
+       team = teammodel.find_by_teamname(teamname)
+       # team_id = team.id
+     end
+    def nextplayer_to_be_picked(playermodel,round_i,numof_teams_this_round)
+    # players = playermodel.find(:all,:order => "id asc",:limit => 32)
+       players = playermodel.limit(numof_teams_this_round).offset($offset_array[round_i-1])
+       puts"numof_teams_this_round :#{numof_teams_this_round},players.count :#{players.count}"
+      # puts "players[0]: #{players[0].playername}"
+      # if round_i == 1
+       if $i < numof_teams_this_round
+         @player = players[$i] 
+           puts"Now the  player to be picked is : #{@player.playername}" 
+         puts " $i : #{$i}"
+         $i = $i+1
+      end
+    @player 
     end
-    def nextplayer_to_be_picked(playermodel)
-       total_players = playermodel.playercount
-    player = playermodel.find(:first)
-    #puts "#{total_players}"
-    # player = pick_next(Player)
-    puts"Next player to be picked is : #{player.playername}"
-    player = playermodel.find(:first)
-    end
- 
-  
 end
