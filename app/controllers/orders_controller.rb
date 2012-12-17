@@ -4,6 +4,7 @@ class OrdersController < ApplicationController
   def index
     @orders = Order.all
 
+
     respond_to do |format|
       format.html # index.html.erb
       format.json { render json: @orders }
@@ -79,5 +80,8 @@ class OrdersController < ApplicationController
       format.html { redirect_to orders_url }
       format.json { head :no_content }
     end
+  end
+  def search
+    @orders = Order.all
   end
 end

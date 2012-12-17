@@ -1,49 +1,66 @@
 
 namespace :simulate do
-    $i = 0  
+      
   task :order => :environment do
-    $offset_array = Array.new
-      $offset_array[0] = 0
-  for round_i in 1..3 
-  orders_teams_round = draft_order_round(Order,round_i)
- numof_teams_this_round = orders_teams_round.count
- $offset_for_next_round = numof_teams_this_round
-  (1..(orders_teams_round.count)).each do |i|
-    puts" ROUND : #{round_i}, PICK #{i}:"
-    order_teamname = orders_teams_round[i-1].team
-       team = get_teamobject(order_teamname,Team)
-       player = nextplayer_to_be_picked(Player,round_i,numof_teams_this_round )
-     puts"Team to pick :#{order_teamname},team_id:#{team.id},player_id :#{player.id}"
-     team.acquire(player.id,team.id) 
+ @offset_array = [0,0,0,0,0,0,0]
+ @limit_array = [0,0,0,0,0,0,0]
+for @round_i in 1..7
+  @nthround_teams = pick_nthround_teams(Order,@round_i)
+  @offset = @limit_array.inject(0){|sum,item|sum + item}
+  @limit_array[@round_i-1] = @nthround_teams.count
+ if @round_i == 0
+    @offset_array[0] = 0
+    
+    elsif @round_i > 1
+    @offset_array[@round_i -1] = @offset
+    puts " OFFSET: #{@offset_array[@round_i -1]}"
+  end #if for roundloop
+  @players = pick_players(Player,@limit_array[@round_i-1],@offset_array[@round_i-1])
+ # puts " Players names from @players"
+ # @players.each do|p| 
+   # puts " #{p.id},#{p.playername}"
+ # end
+  if @players.count == @limit_array[@round_i-1]
+   # puts " Number of players picked is eq to num of teams picked "  
+  end #if for print
+  @count = 0
+   # find_teamobject_fromteamTable(@nthround_teams)
+   (1..@limit_array[@round_i-1]).each do |i|
+     @count = @count+1
+    # puts" ROUND & PICK : round_i : #{round_i}, i #{i}:"
+    @order_teamname = @nthround_teams[i-1].team
+       @team_picked = find_teamobject(@order_teamname,Team)
+       puts"Team that has a chance to pick now :#{@team_picked.teamname}"
+       # if @order_teamname == @team.teamname
+         # puts " Count is : #{@count},teamnames and lengths are same in both orders and teams tables"
+       # else
+         # puts "teamnames and lengths are not similar,Count is : #{@count} "
+       # end
+         @player_picked = @players[i-1]
+     puts" Player picked in round: #{@round_i}, pick : #{i} is #{@player_picked.playername}"
+     # @team_picked.acquire(@player_picked.id,@team_picked.id) 
+          @team_picked.acquire(@player_picked.id) 
     #sleep(2)
-   end
-  puts"$OFFSET for #{round_i}:#{$offset}, num_of_teams in this round : #{orders_teams_round.count}"
-  $offset_array[round_i] = $offset_array[round_i-1] + numof_teams_this_round
+   end 
    end #for loop
-  end
+     
+  end #task order env
   task :team => :environment do 
-  end
+  end #task order env
   task :all => [:order, :team] 
-    def draft_order_round(ordermodel,round_i)
-      puts"Round_i : #{round_i}"
+  def pick_nthround_teams(ordermodel,round_i)
+      
        ordermodel.find(:all,:conditions => {:round => round_i})   
     end
-     def get_teamobject(teamname,teammodel)
-       team = teammodel.find_by_teamname(teamname)
-       # team_id = team.id
-     end
-    def nextplayer_to_be_picked(playermodel,round_i,numof_teams_this_round)
-    # players = playermodel.find(:all,:order => "id asc",:limit => 32)
-       players = playermodel.limit(numof_teams_this_round).offset($offset_array[round_i-1])
-       puts"numof_teams_this_round :#{numof_teams_this_round},players.count :#{players.count}"
-      # puts "players[0]: #{players[0].playername}"
-      # if round_i == 1
-       if $i < numof_teams_this_round
-         @player = players[$i] 
-           puts"Now the  player to be picked is : #{@player.playername}" 
-         puts " $i : #{$i}"
-         $i = $i+1
-      end
-    @player 
+    def pick_players(player,limit,offset)
+      
+      players = player.limit(limit).offset(offset)
+    
     end
-end
+    def find_teamobject(teamname,teammodel)  
+      team = teammodel.find_by_teamname(teamname)
+    end
+    def find_teamobject_fromteamTable(nthroundteams)
+      
+    end
+end #namespace

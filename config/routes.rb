@@ -1,11 +1,15 @@
 Nfldraft::Application.routes.draw do
-  resources :orders
+  
+   # resources :orders
+
+     get '/orders' => 'orders#search'
 
 
   resources :players
 
 
   resources :teams
+  
 
 
   # The priority is based upon order of creation:
